@@ -12,7 +12,10 @@ material_z = 50;
 
 shelf_x = 1700;
 shelf_y = 600;
-shelf_height = 88;
+shelf_z = 88;
+
+// Starting height for first shelf
+shelf1 = 1400;
 
 // Shelf thickness
 thickness = 12;
@@ -40,208 +43,91 @@ Laser 170cm to wall from edge across
 
 */
 
-shelf1 = 1600;
+shelf_frame(shelf1);
 
-translate([0, cls_height, shelf1]) {
-           cube([width, cls_width, cls_height]); } // front
-translate([0, depth - cls_width - cls_height, shelf1]) {
-           cube([width, cls_width, cls_height]); } // back
-translate([cls_width, 0, shelf1]) {
+s1 = shelf1 + cls_height;
+s2 = s1 + thickness + shelf_z;
+s3 = s2 + thickness + shelf_z + (2 * cls_height);
+s4 = s3 + thickness + shelf_z;
+
+storage_shelf(s1);
+storage_shelf(s2);
+
+// Shelf supports
+translate([0, cls_height, s2 + thickness + shelf_z + cls_height]) {
+           cube([width + (2 * cls_width), cls_width, cls_height]); } // front
+translate([0, depth - cls_width - cls_height, s2 + thickness + shelf_z + cls_height]) {
+           cube([width + (2 * cls_width), cls_width, cls_height]); } // back
+
+translate([cls_width, 0, s2 + thickness + shelf_z]) {
            cube([cls_width, depth, cls_height]); } // left
-translate([right_legs - cls_width, 0, shelf1]) {
+translate([right_legs - cls_width, 0, s2 + thickness + shelf_z]) {
            cube([cls_width, depth, cls_height]); } // right
 
-color("green"){
-//  translate([cls_width + thickness + thickness + ((material_x + 5) * 0),
-//             0, shelf1 + cls_height]) { cube([material_x + 5, depth, thickness]); } 
-//  translate([cls_width + thickness + thickness + ((material_x + 5) * 1),
-//             0, shelf1 + cls_height]) { cube([material_x + 5, depth, thickness]); } 
-//  translate([cls_width + thickness + thickness + ((material_x + 5) * 2),
-//             0, shelf1 + cls_height]) { cube([material_x + 5, depth, thickness]); }
-//  translate([cls_width + thickness + thickness + ((material_x + 5) * 3),
-//             0, shelf1 + cls_height]) { cube([material_x + 5, depth, thickness]); }
-  translate([cls_width,
-             0, shelf1 + cls_height]) { cube([shelf_x, shelf_y, thickness]); }
-}
+shelf_surface(s2 + thickness + shelf_z);
 
-color("black") {
-  // Dividers
-  translate([cls_width + ((material_x + 10 + thickness) * 0),
-             0, shelf1 + cls_height]) { cube([thickness, depth, shelf_height]); }
-  translate([cls_width + ((material_x + 10 + thickness) * 1),
-             0, shelf1 + cls_height]) { cube([thickness, depth, shelf_height]); }
-  translate([cls_width + ((material_x + 10 + thickness) * 2),
-             0, shelf1 + cls_height]) { cube([thickness, depth, shelf_height]); }
-  translate([cls_width + ((material_x + 10 + thickness) * 3),
-             0, shelf1 + cls_height]) { cube([thickness, depth, shelf_height]); }
-  translate([cls_width + ((material_x + 10 + thickness) * 4),
-             0, shelf1 + cls_height]) { cube([thickness, depth, shelf_height]); }
-}
+storage_shelf(s3);
+storage_shelf(s4);
 
-// Test pieces
-//color("blue"){
-//
-//  // 1 - Left
-//  translate([cls_width + thickness + 2 + ((material_x + 5 + thickness) * 0),
-//             -20, shelf1 + 63 + thickness + 20]) {
-//    cube([material_x, material_y, material_z]);
-//  }
-//
-//  // 2 - Left Center
-//  translate([cls_width + thickness + 2 + ((material_x + 5 + thickness) * 1),
-//             -20, shelf1 + 63 + thickness + 20]) {
-//     cube([material_x, material_y, material_z]);
-// }
-//
-//  // 3 - Right Center
-//  translate([cls_width + thickness + 2 + ((material_x + 5 + thickness) * 2),
-//             -20,
-//             shelf1 + 63 + thickness + 20]) {
-//    cube([material_x, material_y, material_z]);
-//  }
-//
-//  // 4 - Right
-//  translate([cls_width + thickness + 2 + ((material_x + 5 + thickness) * 3),
-//				 -20,
-//             shelf1 + 63 + thickness + 20]) {
-//    cube([material_x, material_y, material_z]);
-//  }
-//}
+//test_pieces(s2);
 
-/*
-Variables to modify to mess with the basics:
+shelf_frame(s4 + thickness + shelf_z);
+shelf_surface(s4 + thickness + shelf_z + cls_height);
 
-mdf_shelf_thickness is the thickness of the shelf material.
-shelf_count is the number of shelves you want.
-shelf_spacing is how much of a gap you want between each shelf.
+shelf_frame(height - thickness - cls_height);
+shelf_surface(height - thickness);
 
-The other variables are fairly standard, play around!
-*/
-
-// Part Definitions
-
-/*
-mdf_shelf_thickness = 12;
-mdf_shelf_width = 600;
-mdf_shelf_depth = 400;
-mdf_color = "red";
-cls_thickness = 38;
-cls_height = 63;
-cls_color = "green";
-studding_diameter = 10;
-
-// Drill holes for studding
-
-hole_fudge = 2;
-hole_offset = 14;
-hole_diameter = studding_diameter + hole_fudge;
-
-// Material specs
-mdf_shelves_per_mdf_sheet = 8;
-full_cls_length = 2400;
-
-shelf_spacing = 0;
-shelf_count = 10;
-
-// CLS Long lengths
-
-cls_long_length_count = shelf_count + 1;
-cls_long_length_per_cls =
-  floor(full_cls_length / mdf_shelf_depth);
-cls_long_length_cls_count =
-  ceil(cls_long_length_count / cls_long_length_per_cls);
-
-// CLS Short lengths
-
-cls_short_length_count = (shelf_count * 2) + 2;
-cls_short_length_per_cls =
-  floor(full_cls_length / mdf_shelf_width);
-cls_short_length_cls_count =
-  ceil(cls_short_length_count / cls_short_length_per_cls);
-
-// Totals
-
-total_height = (mdf_shelf_thickness + cls_thickness)*shelf_count + (shelf_spacing * (shelf_count - 1)) + cls_thickness;
-total_width = mdf_shelf_width;
-total_depth = mdf_shelf_depth;
-
-// Material Counting
-
-total_mdf_sheets = ceil(shelf_count / mdf_shelves_per_mdf_sheet);
-total_cls_lengths = ceil((cls_long_length_cls_count + cls_short_length_cls_count)/2);
-
-// Printing Data
-
-echo(str("Total Height: ", total_height, "mm"));
-echo(str("Total Width: ", total_width, "mm"));
-echo(str("Total Depth: ", total_depth, "mm"));
-
-echo(str("MDF Shelf Count: ", shelf_count));
-echo(str("CLS short length Count: ", cls_short_length_count));
-echo(str("CLS long length Count: ", cls_long_length_count));
-
-echo(str("Total MDF Sheets: ", total_mdf_sheets));
-echo(str("Total CLS Lengths: ", total_cls_lengths));
-
-// Design Layout
-
-bottom_shelf();
-
-for(z = [1 : shelf_count-1])
-  translate([
-    0,
-    0,
-    (mdf_shelf_thickness + cls_height + shelf_spacing) * z
-  ])
-    shelf_construct();
-
-// Modules
-
-module bottom_shelf() {
-  shelf_construct();
-//  for(y = [0,mdf_shelf_depth-cls_thickness])
-//    translate([0,y,-cls_height])
-//      rotate([90,0,90])
-//        cls_bar(mdf_shelf_width);
-
-  for(x = [0,mdf_shelf_width-cls_thickness])
-    translate([x + cls_thickness, cls_thickness, -cls_height])
-      rotate([90,0,180])
-        cls_bar(mdf_shelf_depth - (cls_thickness * 2), "yellow");
-
-//  for(x = [hole_offset, mdf_shelf_width - hole_offset])
-//    for(y = [hole_offset, mdf_shelf_depth - hole_offset])
-//      translate([x,y,-1])
-//        cylinder(d=studding_diameter,h=(mdf_shelf_thickness + cls_height+ shelf_spacing)*shelf_count - shelf_spacing);
-}
-
-module shelf_construct() {
-  difference() {
-    union() {
-      mdf_shelf();
-      for(y = [0,mdf_shelf_depth-cls_thickness])
-        translate([0,y,mdf_shelf_thickness])
-          rotate([90,0,90])
-            cls_bar(mdf_shelf_width);
-      translate([cls_thickness, cls_thickness, mdf_shelf_thickness])
-        rotate([90,0,180])
-          cls_bar(mdf_shelf_depth - (cls_thickness * 2), "yellow");
-    }
-//    for(x = [hole_offset, mdf_shelf_width - hole_offset])
-//      for(y = [hole_offset, mdf_shelf_depth - hole_offset])
-//        translate([x,y,-1])
-//          cylinder(d=hole_diameter,h=mdf_shelf_thickness + cls_height + 2);
+// Shelf surface
+module shelf_surface(z) {
+  color("green") {
+    translate([cls_width,
+               0, z]) { cube([shelf_x, shelf_y, thickness]); }
   }
 }
 
-module mdf_shelf(my_color = mdf_color) {
-  color(my_color)
-    cube([mdf_shelf_width,mdf_shelf_depth,mdf_shelf_thickness]);
+// Mitred shelf frame
+module shelf_frame(z) {
+
+  // Shelf supports
+  translate([0, cls_height, z]) {
+             cube([width + (2 * cls_width), cls_width, cls_height]); } // front
+  translate([0, depth - cls_width - cls_height, z]) {
+             cube([width + (2 * cls_width), cls_width, cls_height]); } // back
+  translate([cls_width, 0, z]) {
+             cube([cls_width, depth, cls_height]); } // left
+  translate([right_legs - cls_width, 0, z]) {
+             cube([cls_width, depth, cls_height]); } // right
 }
 
-module cls_bar(length = 100, my_color = cls_color) {
-  color(my_color)
-    cube([cls_thickness,cls_height,length]);
+
+module storage_shelf(shelf_height) {
+
+  // Shelf surface
+  color("green") {
+    translate([cls_width,
+               0, shelf_height]) { cube([shelf_x, shelf_y, thickness]); }
+  }
+
+  // Vertical shelf dividers
+  color("black") {
+    for(x = [0: 1: 4]) {
+      translate([cls_width + ((material_x + 10 + thickness) * x),
+                 0, shelf_height + thickness]) { cube([thickness, depth, shelf_z]); }
+    }
+  }
+
+  echo(str("Shelf Height: ", shelf_height, "mm"));
 }
 
-*/
+// Use these to verify dimensions
+module test_pieces(shelf_height) {
+  // Test pieces
+  color("blue"){
+    for(x = [0: 1: 3]) {
+      translate([cls_width + thickness + 2 + ((material_x + 10 + thickness) * x),
+                 -20, shelf_height + thickness + 10]) {
+        cube([material_x, material_y, material_z]);
+      }
+    }
+  }
+}
