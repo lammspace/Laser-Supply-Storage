@@ -47,32 +47,20 @@ shelf_frame(shelf1);
 
 s1 = shelf1 + cls_height;
 s2 = s1 + thickness + shelf_z;
-s3 = s2 + thickness + shelf_z + (2 * cls_height);
+s3 = s2 + thickness + shelf_z;
 s4 = s3 + thickness + shelf_z;
 
 storage_shelf(s1);
 storage_shelf(s2);
-
-// Shelf supports
-translate([0, cls_height, s2 + thickness + shelf_z + cls_height]) {
-           cube([width + (2 * cls_width), cls_width, cls_height]); } // front
-translate([0, depth - cls_width - cls_height, s2 + thickness + shelf_z + cls_height]) {
-           cube([width + (2 * cls_width), cls_width, cls_height]); } // back
-
-translate([cls_width, 0, s2 + thickness + shelf_z]) {
-           cube([cls_width, depth, cls_height]); } // left
-translate([right_legs - cls_width, 0, s2 + thickness + shelf_z]) {
-           cube([cls_width, depth, cls_height]); } // right
-
-shelf_surface(s2 + thickness + shelf_z);
-
 storage_shelf(s3);
 storage_shelf(s4);
+shelf_surface(s4 + thickness + shelf_z);
+
+s5 = s4 + (3 * cls_height);
+shelf_frame(s5);
+shelf_surface(s5 + cls_height);
 
 //test_pieces(s2);
-
-shelf_frame(s4 + thickness + shelf_z);
-shelf_surface(s4 + thickness + shelf_z + cls_height);
 
 shelf_frame(height - thickness - cls_height);
 shelf_surface(height - thickness);
@@ -98,7 +86,6 @@ module shelf_frame(z) {
   translate([right_legs - cls_width, 0, z]) {
              cube([cls_width, depth, cls_height]); } // right
 }
-
 
 module storage_shelf(shelf_height) {
 
